@@ -4,7 +4,6 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
-    "canvas": "^3.2.3",
     "chart.js": "^2.8.0",
     "classnames": "^2.2.6",
     "jest-canvas-mock": "^2.1.1",
@@ -17,7 +16,7 @@
     "react-lottie": "^1.2.3",
     "react-router-dom": "^5.0.1",
     "react-router-hash-link": "^1.2.2",
-    "react-scripts": "3.1.1",
+    "react-scripts": "5.0.1",
     "react-simple-icons": "^1.0.0-beta.5",
     "sass": "^1.101.0",
     "unfetch": "^4.1.0"
