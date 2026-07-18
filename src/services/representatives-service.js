@@ -18,19 +18,19 @@ const RepresentativeService = {
     )
   },
 
-  getNews(senator1, senator2, representative1) {
+  getNews(representative1, senator1, senator2) {
     return fetch(`${config.API_ENDPOINT}/news`, {
       method: 'POST',
       headers: {
         'content-type': 'application/json'
       },
-      body: JSON.stringify({ 
+      body: JSON.stringify({
+        representative1_first: representative1.first_name,
+        representative1_last: representative1.last_name, 
         senator1_first: senator1.first_name, 
         senator1_last: senator1.last_name, 
         senator2_first: senator2.first_name, 
         senator2_last: senator2.last_name, 
-        representative1_first: representative1.first_name,
-        representative1_last: representative1.last_name,
       })
     })
     .then(res => 

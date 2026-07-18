@@ -24,11 +24,13 @@ export default class Dashboard extends React.Component {
 
       RepresentativeService.getReps(this.context.user.address)
         .then(res => {
-          if (res.state) {
-            this.context.setUserState(res.state.toUpperCase());
+          if (res.address.state_province) {
+            this.context.setUserState(res.address.state_province.toUpperCase());
+            // this.context.setUserState(res.state.toUpperCase());
           }
-          if (res.district) {
-            this.context.setUserDistrict(res.district);
+          if (res.district.name) {
+            this.context.setUserDistrict(res.district.name);
+            // this.context.setUserDistrict(res.district);
           }
           if (res.representatives) {
             this.context.setRepresentatives(res.representatives);
@@ -37,17 +39,18 @@ export default class Dashboard extends React.Component {
         })
         .then(() => {
           RepresentativeService.getNews(
-            this.context.representatives[0],
-            this.context.representatives[1],
-            this.context.representatives[2]
+            this.context.representatives[0].bio,
+            this.context.representatives[1].bio,
+            this.context.representatives[2].bio
           )
             .then(news => this.context.setNews(news.articles))
-          this.context.representatives.forEach((rep,idx)=> {
-            RepresentativeService.getFinances(rep.crp_id).then(response => {
-              this.context.setFinancesOnRep(response, idx);
-            })  
-          })
-           
+            // TODO GET FINANCES FOR EACH REP AND SET IN CONTEXT
+          // this.context.representatives.forEach((rep,idx)=> {
+          //   RepresentativeService.getFinances(rep.crp_id).then(response => {
+          //     this.context.setFinancesOnRep(response, idx);
+          //   })
+          // })
+
         }).catch(error => this.context.setError(error));
     } else {this.props.history.push('/')}
   }
