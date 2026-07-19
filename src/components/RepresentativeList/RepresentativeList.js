@@ -8,7 +8,7 @@ export default class RepresentativeList extends React.Component {
   generateRepList() {
     if (this.context.representatives) {
       const repElems = this.context.representatives.map((rep, idx) => {
-        const title = rep.type;
+        const title = rep.type.charAt(0).toUpperCase() + rep.type.slice(1);
         // get district if representative
         const district = title === 'representative' ? `${this.context.district}` : '';
         const photoUrl = rep.bio.photo_url;
