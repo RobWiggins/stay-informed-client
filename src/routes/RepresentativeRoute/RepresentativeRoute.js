@@ -21,7 +21,7 @@ export default class RepresentativeRoute extends React.Component {
   }
 
   render() {
-    let currRepId = this.props.match.params.repId;
+    let bioguideId = this.props.match.params.bioguideId;
     let name = '';
     let party = '';
     let currentRole = '';
@@ -36,16 +36,25 @@ export default class RepresentativeRoute extends React.Component {
 
     if (this.context.representatives) {
       const currentRep = this.context.representatives.find(
-        rep => rep.member_id === currRepId
+        rep => String(rep.references.bioguide_id) === String(bioguideId)
       );
-      name = `${currentRep.first_name} ${currentRep.last_name}`;
-      currentRole = currentRep.roles[0].title;
-      phone = currentRep.roles[0].phone;
-      url = currentRep.url;
-      fbUrl = `https://www.facebook.com/${currentRep.facebook_account}`;
-      twitterUrl = `https://www.twitter.com/${currentRep.twitter_account}`;
+
+    if (!currentRep) {
+      return (
+        <main>
+          <h2>Representative not found</h2>
+          <p>No representative matched ID: {bioguideId}</p>
+        </main>
+    )}
+
+      name = `${currentRep.bio.first_name} ${currentRep.bio.last_name}`;
+      currentRole = currentRep.type.charAt(0).toUpperCase() + currentRep.type.slice(1);
+      phone = currentRep.contact.phone;
+      url = currentRep.contact.url;
+      fbUrl = currentRep.social.facebook;
+      twitterUrl = currentRep.social.twitter;
       party =
-        currentRep.current_party === 'R' ? (
+        currentRep.bio.party === 'Republican' ? (
           <div>
             Republican <img className="partyIcon" src={Elephant} alt="" />
           </div>
@@ -57,15 +66,16 @@ export default class RepresentativeRoute extends React.Component {
       contribs = currentRep.contributionTotals || null;
       topContribs = currentRep.topContributors || null;
       topIndustries = currentRep.topIndustries || null;
-      if (currentRep.photoUrl) {
+      if (currentRep.bio.photo_url) {
         currentRepImg = (
           <img
-            src={currentRep.photoUrl}
+            src={currentRep.bio.photo_url}
             alt={`professional headshot of ${name}`}
           />
         );
       }
     }
+
     return (
       <div className="representativePage">
         <section className="repPage-section" id="contact-info">

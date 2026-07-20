@@ -53,7 +53,7 @@ export default class App extends Component {
               component={VoterRegistrationRoute}
             />
             <Route
-              path={'/representatives/:repId'}
+              path={'/representatives/:bioguideId'}
               component={RepresentativeRoute}
             />
             <PublicOnlyRoute

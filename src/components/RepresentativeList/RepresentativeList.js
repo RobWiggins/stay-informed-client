@@ -15,7 +15,7 @@ export default class RepresentativeList extends React.Component {
         const party =  rep.bio.party ? rep.bio.party.charAt(0).toUpperCase() + rep.bio.party.slice(1) : '';
 
         return (
-          <li key={idx} className="representative" onClick={e => this.props.handleClickRepDetails(e, rep.member_id)}>
+          <li key={rep.bioguide_id} className="representative" onClick={e => this.props.handleClickRepDetails(e, rep.references.bioguide_id)}>
             {photoUrl ? (
               <img
                 className="headshot"
@@ -29,7 +29,7 @@ export default class RepresentativeList extends React.Component {
                 className="headshot"
                 src={'http://media2.giphy.com/gifsu/5zkNlgUl7QodTlg7nT/giphy-glitter.gif'}
                 alt={`professional photographic headshot of ${rep.bio.first_name} ${
-                  rep.last_name
+                  rep.bio.last_name
                 }`}
               />
             )}

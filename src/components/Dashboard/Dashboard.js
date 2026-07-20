@@ -26,11 +26,9 @@ export default class Dashboard extends React.Component {
         .then(res => {
           if (res.address.state_province) {
             this.context.setUserState(res.address.state_province.toUpperCase());
-            // this.context.setUserState(res.state.toUpperCase());
           }
           if (res.district.name) {
             this.context.setUserDistrict(res.district.name);
-            // this.context.setUserDistrict(res.district);
           }
           if (res.representatives) {
             this.context.setRepresentatives(res.representatives);
@@ -44,7 +42,7 @@ export default class Dashboard extends React.Component {
             this.context.representatives[2].bio
           )
             .then(news => this.context.setNews(news.articles))
-            // TODO GET FINANCES FOR EACH REP AND SET IN CONTEXT
+            // TODO GET FINANCES FOR EACH REP AND SET IN CONTEXT??
           // this.context.representatives.forEach((rep,idx)=> {
           //   RepresentativeService.getFinances(rep.crp_id).then(response => {
           //     this.context.setFinancesOnRep(response, idx);
@@ -55,13 +53,17 @@ export default class Dashboard extends React.Component {
     } else {this.props.history.push('/')}
   }
 
-  handleClickRepDetails = (e, repId) => {
-    e.preventDefault();
+  handleClickRepDetails = (event, bioguideId) => {
+    event.preventDefault();
 
-    const { location, history } = this.props;
-    const destination =
-      (location.state || {}).from || `/representatives/${repId}`;
-    history.push(destination);
+    if (!bioguideId) {
+      this.context.setError(
+        new Error('Representative is missing a bioguide_id')
+      );
+      return;
+    }
+
+    this.props.history.push(`/representatives/${bioguideId}`);
   };
 
   render() {
