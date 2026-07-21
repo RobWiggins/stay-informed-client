@@ -101,6 +101,7 @@ export class UserProvider extends Component {
       }
       return rep;
     });
+    console.log(JSON.stringify('new finances on rep:', representatives));
     this.setState({ representatives });
   }
   }

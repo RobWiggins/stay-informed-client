@@ -43,11 +43,11 @@ export default class Dashboard extends React.Component {
           )
             .then(news => this.context.setNews(news.articles))
             // TODO GET FINANCES FOR EACH REP AND SET IN CONTEXT??
-          // this.context.representatives.forEach((rep,idx)=> {
-          //   RepresentativeService.getFinances(rep.crp_id).then(response => {
-          //     this.context.setFinancesOnRep(response, idx);
-          //   })
-          // })
+          this.context.representatives.forEach((rep,idx)=> {
+            RepresentativeService.getFinances(rep.references.bioguide_id).then(response => {
+              this.context.setFinancesOnRep(response, idx);
+            })
+          })
 
         }).catch(error => this.context.setError(error));
     } else {this.props.history.push('/')}

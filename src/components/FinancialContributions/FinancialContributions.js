@@ -6,22 +6,23 @@ export default class FinancialContributions extends Component {
   getDataArr() {
     const dataArr = [];
 
-    for (let i = 0; i < Math.min(5, this.props.contributions.length); i++) {
-      dataArr.push(this.props.contributions[i].total);
+    for (let i = 0; i < Math.min(5, this.props.contributions.topIndustries.length); i++) {
+      dataArr.push(this.props.contributions.topIndustries[i].total_attributed);
     }
     return dataArr;
   }
 
   getLabelArr() {
     const labelArr = [];
+    // TODO REMOVE IF CUT OUT ORGANZATIONAL FUNDING
     // determine whether we are charting topContributors vs topIndustries
-    let isIndustryType = this.props.contributions[0].industry_name;
-    for (let i = 0; i < Math.min(5, this.props.contributions.length); i++) {
-      if (isIndustryType) {
-        labelArr.push(this.props.contributions[i].industry_name);
-      } else {
-        labelArr.push(this.props.contributions[i].org_name);
-      }
+    // let isIndustryType = this.props.contributions[0].industry_name;
+    for (let i = 0; i < Math.min(5, this.props.contributions.topIndustries.length); i++) {
+      // if (isIndustryType) {
+        labelArr.push(this.props.contributions.topIndustries[i].industry);
+      // } else {
+      //   labelArr.push(this.props.contributions[i].org_name);
+      // }
     }
     return labelArr;
   }
@@ -33,9 +34,7 @@ export default class FinancialContributions extends Component {
     let chartTitle = '';
     if (this.props.contributions) {
       // get title for industry vs org contribution chart type
-      chartTitle = this.props.contributions[0].industry_name
-        ? 'Highest Sector Contributors'
-        : 'Highest Organizational Contributors';
+      chartTitle = 'Highest Sector Contributors'
       const dataArr = this.getDataArr();
       const labelArr = this.getLabelArr();
       data = {

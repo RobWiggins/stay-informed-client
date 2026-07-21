@@ -9,25 +9,74 @@ import Icon from 'react-simple-icons';
 import MoneySpinner from '../../components/MoneySpinner/Spinner';
 import Elephant from './elephant.png';
 import Donkey from './donkey.png';
+import RepresentativeService from '../../services/representatives-service';
 
 export default class RepresentativeRoute extends React.Component {
   static contextType = UserContext;
 
+  state = {
+    loadingFinances: true,
+    financeError: null,
+    topIndustries: [],
+    totalFundingAndSpending: null,
+  };
+
   componentDidMount() {
     window.scrollTo(0,0);
-    if (!this.context.representatives) {
+
+    const representatives = this.context.representatives || [];
+
+
+    if (representatives.length === 0) {
       this.props.history.push('/');
     }
+
+    this.loadFinances()
   }
 
+  loadFinances = async () => {
+    const { bioguideId } = this.props.match.params
+
+    try {
+      this.setState({
+        loadingFinances: true,
+        financeError: null,
+      })
+
+    const { bioguideId, totalFundingAndSpending, topIndustries } = await RepresentativeService.getFinances(bioguideId)
+
+    this.setState({
+      topIndustries: topIndustries || [],
+      totalFundingAndSpending: totalFundingAndSpending || null,
+      loadingFinances: false,
+    })
+  } catch (error) {
+    console.error('Finance request failed:', error)
+ 
+    this.setState({
+      financeError: error, loadingFinances: false
+    })
+  }
+  }
+
+
   render() {
+
+    const {
+      loadingFinances,
+      financeError,
+      topIndustries,
+      totalFundingAndSpending,
+    } = this.state;
+
     let bioguideId = this.props.match.params.bioguideId;
     let name = '';
     let party = '';
     let currentRole = '';
     let contribs = '';
-    let topContribs;
-    let topIndustries;
+    // TODO REMOVE
+    // let totalFundingAndSpending;
+    // let topIndustries;
     let currentRepImg = '';
     let phone = '';
     let url = '';
@@ -63,9 +112,13 @@ export default class RepresentativeRoute extends React.Component {
             Democrat <img className="partyIcon" src={Donkey} alt="" />
           </div>
         );
-      contribs = currentRep.contributionTotals || null;
-      topContribs = currentRep.topContributors || null;
-      topIndustries = currentRep.topIndustries || null;
+
+      console.log("currentRep before reading finances --->", currentRep);
+      // totalFundingAndSpending = currentRep.totalFundingAndSpending || null;
+      // TODO ADD, FIX, OR REMOVE
+      // totalFundingAndSpending = currentRep.totalFundingAndSpending || null;
+      // console.log("topIndustries on client", currentRep.topIndustries)
+      // topIndustries = currentRep.topIndustries || null;
       if (currentRep.bio.photo_url) {
         currentRepImg = (
           <img
@@ -138,9 +191,9 @@ export default class RepresentativeRoute extends React.Component {
             <div className="representativeImage">{currentRepImg}</div>
           </div>
         </section>
-        {contribs ? (
+        {!loadingFinances ? (
           <>
-            <section className="repPage-section">
+            {/* <section className="repPage-section">
               <TextContributions contributions={topContribs} />
               <h3 className="chartDesc">
                 Among all organizations, your representative accepted the
@@ -149,7 +202,7 @@ export default class RepresentativeRoute extends React.Component {
                 platform and policies.
               </h3>
               <FinancialContributions contributions={topContribs} />
-            </section>
+            </section> */}
             <section className="repPage-section">
               <TextContributions contributions={topIndustries} />
               <h3 className="chartDesc">
@@ -161,14 +214,14 @@ export default class RepresentativeRoute extends React.Component {
               <FinancialContributions contributions={topIndustries} />
             </section>
             <section className="repPage-section">
-              <TextContributions contribs={contribs} />
+              <TextContributions fundingAndSpending={totalFundingAndSpending} />
               <h3 className="chartDesc">
                 The degree of donations and spending in the last campaign cycle
                 lends insight into the strength of the representative's funding
                 infrastructure. Larger budgets typically grant candidates
                 greater visibility.
               </h3>
-              <TotalContributions contribs={contribs} />
+              <TotalContributions fundingAndSpending={totalFundingAndSpending} />
             </section>
           </>
         ) : (

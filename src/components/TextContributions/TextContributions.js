@@ -2,25 +2,28 @@ import React from 'react'
 
 export default class TextContributions extends React.Component {
   render() {
+
+    // TODO REMOVE
     let contribList = ''
     let contribHeader = ''
-    if (this.props.contributions) {
-      if (this.props.contributions[0].org_name) {
-        contribHeader = 'Top Contributors'
-        contribList = this.props.contributions.map((line,idx) => {
-          const total = parseInt(line.total).toLocaleString();
-          if(idx<5){
-          return (
-            <p className='contributionItem' key={line.org_name}>
-              <span className='repPage-span'>{line.org_name}</span>
-              <span className='contributionAmount'>${total}</span>
-            </p>
-          )}
-          return '';
-        })
-      }
-      else {
-        contribHeader = 'Top Industries'
+    // if (this.props.contributions) {
+    //   if (this.props.contributions[0].org_name) {
+    //     contribHeader = 'Top Contributors'
+    //     contribList = this.props.contributions.map((line,idx) => {
+    //       const total = parseInt(line.total).toLocaleString();
+    //       if(idx<5){
+    //       return (
+    //         <p className='contributionItem' key={line.org_name}>
+    //           <span className='repPage-span'>{line.org_name}</span>
+    //           <span className='contributionAmount'>${total}</span>
+    //         </p>
+    //       )}
+    //       return '';
+    //     })
+    //   }
+    //   else {
+      if (this.props.contributions) {
+        contribHeader = 'Top Industries by monetary donations'
         contribList = this.props.contributions.map((line,idx) => {
           const total = parseInt(line.total).toLocaleString();
           if (idx<5){
@@ -40,9 +43,8 @@ export default class TextContributions extends React.Component {
             )}
             return '';
         })
-      }
-    } else if (this.props.contribs) {
-      contribHeader = 'Total Contributions in the last cycle'
+    } else if (this.props.fundingAndSpending) {
+      contribHeader = 'Budget History'
       const total_donations = parseInt(this.props.contribs.total_donations).toLocaleString();
       const spent = parseInt(this.props.contribs.spent).toLocaleString();
       const cash_on_hand = parseInt(this.props.contribs.cash_on_hand).toLocaleString();

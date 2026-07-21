@@ -3,23 +3,28 @@ import { HorizontalBar } from 'react-chartjs-2';
 import '../../index.scss'
 
 class ContribsChart extends React.Component {
-  donations = parseFloat(this.props.donations);
+  funding = parseFloat(this.props.funding);
   spent = parseFloat(this.props.spent);
+  cashOnHand = parseFloat(this.props.cashOnHand);
+
+  
 
   /* Formatting react chart-js2 data */
   data = {
-    labels: ['Total Donations', ' Total Spent'],
+    labels: ['Total Funding', ' Total Spent', ' Cash on Hand'],
     datasets: [
       {
         label: 'Dollars ($)',
-        data: [this.donations, this.spent],
+        data: [this.funding, this.spent, this.cashOnHand],
         backgroundColor: [
           'rgba(75, 192, 192, 0.2)', // green
           'rgba(255, 99, 132, 0.2)', // red
+          'rgba(153, 102, 255, 0.2)', // purple
         ],
         borderColor: [
           'rgba(75, 192, 192, 1)', // green
           'rgba(255, 99, 132, 1)', // red
+          'rgba(153, 102, 255, 1)', // purple
         ],
         borderWidth: 1,
       },
@@ -29,7 +34,7 @@ class ContribsChart extends React.Component {
   options = {
     title: {
       display: true,
-      text: 'Contributions vs. Spending in Last Cycle',
+      text: 'Total Contributions, Spending, and Cash on Hand',
       fontSize: 25,
       fontColor: '#000000',
       padding: 20,

@@ -40,18 +40,19 @@ const RepresentativeService = {
     )
   },
 
-  getFinances(cid){
+  getFinances(bioguideId) {
+    console.log(`getFinances(${bioguideId})`)
     return fetch(`${config.API_ENDPOINT}/finances`, {
       method: 'POST',
       headers: {
         'content-type': 'application/json'
       },
       body: JSON.stringify({
-        cid
+        bioguide_id: bioguideId
       })
     })
     .then(res => 
-      (!res.ok) 
+      (!res.ok)
       ? res.json().then(e=>Promise.reject(e))
       : res.json()
     )
@@ -59,7 +60,7 @@ const RepresentativeService = {
 
   getFinancesForAll(repsArray) {
     repsArray.forEach(rep => {
-      this.getFinances(rep.crp_id);
+      this.getFinances(rep.references.bioguide_id);
     })
   }
 }

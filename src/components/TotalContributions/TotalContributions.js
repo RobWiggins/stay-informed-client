@@ -1,10 +1,14 @@
-import React from 'react';
-import ContribsChart from './ContribsChart';
+import React from "react";
+import ContribsChart from "./ContribsChart";
 
-function TotalContributions(props){
+function TotalContributions(props) {
   return (
-      <ContribsChart donations={props.contribs.total_donations} spent={props.contribs.spent}/>
-  )
+    <ContribsChart
+      funding={props.fundingAndSpending.totalFunding}
+      spent={props.fundingAndSpending.totalSpent}
+      cashOnHand={props.fundingAndSpending.cashOnHand}
+    />
+  );
 }
 
 export default TotalContributions;
