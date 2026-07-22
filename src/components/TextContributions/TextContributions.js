@@ -45,9 +45,9 @@ export default class TextContributions extends React.Component {
         })
     } else if (this.props.fundingAndSpending) {
       contribHeader = 'Budget History'
-      const total_donations = parseInt(this.props.contribs.total_donations).toLocaleString();
-      const spent = parseInt(this.props.contribs.spent).toLocaleString();
-      const cash_on_hand = parseInt(this.props.contribs.cash_on_hand).toLocaleString();
+      const total_donations = parseInt(this.props.fundingAndSpending.totalFunding).toLocaleString();
+      const spent = parseInt(this.props.fundingAndSpending.totalSpent).toLocaleString();
+      const cash_on_hand = parseInt(this.props.fundingAndSpending.cashOnHand).toLocaleString();
 
       contribList = (
         <>

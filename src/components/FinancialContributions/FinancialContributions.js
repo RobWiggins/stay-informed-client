@@ -4,30 +4,32 @@ import './FinancialContributions.scss'
 
 export default class FinancialContributions extends Component {
   getDataArr() {
-    const dataArr = [];
-
-    for (let i = 0; i < Math.min(5, this.props.contributions.topIndustries.length); i++) {
-      dataArr.push(this.props.contributions.topIndustries[i].total_attributed);
+    const contributions = this.props.contributions || [];
+  
+    return contributions
+      .slice(0, 5)
+      .map(contribution => contribution.total_attributed);
     }
-    return dataArr;
-  }
 
-  getLabelArr() {
-    const labelArr = [];
-    // TODO REMOVE IF CUT OUT ORGANZATIONAL FUNDING
-    // determine whether we are charting topContributors vs topIndustries
-    // let isIndustryType = this.props.contributions[0].industry_name;
-    for (let i = 0; i < Math.min(5, this.props.contributions.topIndustries.length); i++) {
-      // if (isIndustryType) {
-        labelArr.push(this.props.contributions.topIndustries[i].industry);
-      // } else {
-      //   labelArr.push(this.props.contributions[i].org_name);
-      // }
-    }
-    return labelArr;
+    getLabelArr() {
+    const contributions = this.props.contributions || [];
+
+    return contributions
+      .slice(0, 5)
+      .map(contribution => contribution.industry);
   }
 
   render() {
+
+    const contributions = this.props.contributions || [];
+
+    if (contributions.length === 0) {
+      return (
+        <section id="contributionChart">
+          <p>No industry contribution information is available.</p>
+        </section>
+      );
+    }
 
     // format chart.js react data
     let data = null;

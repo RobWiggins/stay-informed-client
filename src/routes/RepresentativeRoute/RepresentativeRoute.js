@@ -28,7 +28,8 @@ export default class RepresentativeRoute extends React.Component {
 
 
     if (representatives.length === 0) {
-      this.props.history.push('/');
+      this.props.history.replace('/');
+      return
     }
 
     this.loadFinances()
@@ -37,28 +38,28 @@ export default class RepresentativeRoute extends React.Component {
   loadFinances = async () => {
     const { bioguideId } = this.props.match.params
 
+    this.setState({
+      loadingFinances: true,
+      financeError: null,
+    })
+
     try {
+      const response = await RepresentativeService.getFinances(bioguideId)
+
       this.setState({
-        loadingFinances: true,
-        financeError: null,
+        topIndustries: response.topIndustries || [],
+        totalFundingAndSpending: response.totalFundingAndSpending || null,
+        loadingFinances: false,
       })
+    } catch (error) {
+       console.error('Finance request failed:', error)
 
-    const { bioguideId, totalFundingAndSpending, topIndustries } = await RepresentativeService.getFinances(bioguideId)
-
-    this.setState({
-      topIndustries: topIndustries || [],
-      totalFundingAndSpending: totalFundingAndSpending || null,
-      loadingFinances: false,
-    })
-  } catch (error) {
-    console.error('Finance request failed:', error)
- 
-    this.setState({
-      financeError: error, loadingFinances: false
-    })
+       this.setState({
+        financeError: error,
+        loadingFinances: false
+      })
+    }
   }
-  }
-
 
   render() {
 
@@ -191,7 +192,13 @@ export default class RepresentativeRoute extends React.Component {
             <div className="representativeImage">{currentRepImg}</div>
           </div>
         </section>
-        {!loadingFinances ? (
+        {financeError ? (
+           <section className="repPage-section">
+             <p>Financial information could not be loaded.</p>
+           </section>
+         ) : loadingFinances ? (
+           <MoneySpinner />
+         ) : (
           <>
             {/* <section className="repPage-section">
               <TextContributions contributions={topContribs} />
@@ -224,8 +231,6 @@ export default class RepresentativeRoute extends React.Component {
               <TotalContributions fundingAndSpending={totalFundingAndSpending} />
             </section>
           </>
-        ) : (
-          <MoneySpinner />
         )}
       </div>
     );
