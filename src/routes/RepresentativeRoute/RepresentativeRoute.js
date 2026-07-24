@@ -123,6 +123,7 @@ export default class RepresentativeRoute extends React.Component {
       if (currentRep.bio.photo_url) {
         currentRepImg = (
           <img
+            className='representativeImage'
             src={currentRep.bio.photo_url}
             alt={`professional headshot of ${name}`}
           />
