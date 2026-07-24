@@ -6,43 +6,28 @@ export default class TextContributions extends React.Component {
     // TODO REMOVE
     let contribList = ''
     let contribHeader = ''
-    // if (this.props.contributions) {
-    //   if (this.props.contributions[0].org_name) {
-    //     contribHeader = 'Top Contributors'
-    //     contribList = this.props.contributions.map((line,idx) => {
-    //       const total = parseInt(line.total).toLocaleString();
-    //       if(idx<5){
-    //       return (
-    //         <p className='contributionItem' key={line.org_name}>
-    //           <span className='repPage-span'>{line.org_name}</span>
-    //           <span className='contributionAmount'>${total}</span>
-    //         </p>
-    //       )}
-    //       return '';
-    //     })
-    //   }
-    //   else {
-      if (this.props.contributions) {
-        contribHeader = 'Top Industries by monetary donations'
-        contribList = this.props.contributions.map((line,idx) => {
-          const total = parseInt(line.total).toLocaleString();
-          if (idx<5){
-            if (line.industry_name === 'TV/Movies/Music') {
-              return (
-                <p className='contributionItem' key={line.industry_name}>
-                  <span className='repPage-span'>TV / Movies / Music</span>
-                  <span className='contributionAmount'>${total}</span>
-                </p>
-              )}
-            
+
+    if (this.props.topIndustries) {
+      contribHeader = 'Top Industries by monetary donations'
+      contribList = this.props.topIndustries.map((group, idx) => {
+        const total = parseInt(group.total_attributed).toLocaleString();
+        if (idx < 5){
+          if (group.industry === 'TV/Movies/Music') {
             return (
-              <p className='contributionItem' key={line.industry_name}>
-                <span className='repPage-span'>{line.industry_name}</span>
+              <p className='contributionItem' key={group.industry}>
+                <span className='repPage-span'>TV / Movies / Music</span>
                 <span className='contributionAmount'>${total}</span>
               </p>
             )}
-            return '';
-        })
+          
+          return (
+            <p className='contributionItem' key={group.industry}>
+              <span className='repPage-span'>{group.industry}</span>
+              <span className='contributionAmount'>${total}</span>
+            </p>
+          )}
+          return '';
+      })
     } else if (this.props.fundingAndSpending) {
       contribHeader = 'Budget History'
       const total_donations = parseInt(this.props.fundingAndSpending.totalFunding).toLocaleString();

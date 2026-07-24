@@ -211,7 +211,7 @@ export default class RepresentativeRoute extends React.Component {
               <FinancialContributions contributions={topContribs} />
             </section> */}
             <section className="repPage-section">
-              <TextContributions contributions={topIndustries} />
+              <TextContributions topIndustries={topIndustries} />
               <h3 className="chartDesc">
                 Among all sectors, these business sectors donated the
                 greatest dollar amount to this representative. Your
