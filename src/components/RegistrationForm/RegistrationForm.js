@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-import { Input, Required, Label } from '../Form/Form';
-import AuthApiService from '../../services/auth-api-service';
-import Button from '../Button/Button';
-import './RegistrationForm.scss';
-import UserContext from '../../contexts/UserContext';
+import React, { Component } from "react";
+import { Link } from "react-router-dom";
+import { Input, Required, Label } from "../Form/Form";
+import AuthApiService from "../../services/auth-api-service";
+import Button from "../Button/Button";
+import "./RegistrationForm.scss";
+import UserContext from "../../contexts/UserContext";
 
 class RegistrationForm extends Component {
   static contextType = UserContext;
@@ -25,150 +25,151 @@ class RegistrationForm extends Component {
 
   firstInput = React.createRef();
 
-  handleSubmit = ev => {
+  handleSubmit = (ev) => {
     ev.preventDefault();
-    const { name, username, password, street, city, state, zip } = ev.target;
+
+    const form = ev.target;
+
+    const name = form.elements.name.value;
+    const username = form.elements.username.value;
+    const password = form.elements.password.value;
+    const street = form.elements.street.value;
+    const city = form.elements.city.value;
+    const state = form.elements.state.value;
+    const zip = form.elements.zip.value;
 
     // begin validation
     // Only render a lack of State selection or too short zip code error message
     // if the submit button has actually been clicked
-    if (zip.value.length < 5) {
+    if (zip.length < 5) {
       this.setState({
-        isZipValidErr: 'Zip code has too few digits - must be five digits.',
+        isZipValidErr: "Zip code has too few digits - must be five digits.",
       });
-    } else if (state.value === 'placeholder') {
-      this.setState({ isStateValidErr: 'Please select a State.' });
+    } else if (state === "placeholder") {
+      this.setState({ isStateValidErr: "Please select a State." });
     } else {
-      const address = `${street.value}, ${city.value}, ${state.value}, ${zip.value}`;
-      let loginUsername;
+      const address = `${street}, ${city}, ${state}, ${zip}`;
 
-      AuthApiService.postUser({
-        name: name.value,
-        username: username.value,
-        password: password.value,
+      const newUser = {
+        name,
+        username,
+        password,
         address,
-      })
-        .then(user => {
-          loginUsername = user.username;
+      }
+
+      AuthApiService.postUser(newUser)
+        .then((user) => {
+          return AuthApiService.postLogin({
+            username: user.username,
+            password,
+          });
         })
-        .then(response => {
-          AuthApiService.postLogin({
-            username: loginUsername,
-            password: password.value,
-          })
-            .then(res => {
-              name.value = '';
-              username.value = '';
-              password.value = '';
-              street.value = '';
-              city.value = '';
-              state.value = '';
-              zip.value = '';
-              this.context.processLogin(res.authToken);
-            })
-            .catch(res => {
-              this.setState({ isRegistrationValidErr: res.error });
-            });
+        .then((res) => {
+          form.reset();
+          this.context.processLogin(res.authToken);
         })
-        .catch(res => {
+        .catch((res) => {
           this.setState({ isRegistrationValidErr: res.error });
         });
     }
   };
 
-  isNameValid = e => {
+  isNameValid = (e) => {
     e.preventDefault();
     let name = e.target.value;
-    if (name === '' || name === null) {
-      this.setState({ isNameValidErr: 'Please enter your name.' });
-    } else if (typeof name !== 'string' || !name.match(/^[a-zA-Z -]+$/)) {
+    if (name === "" || name === null) {
+      this.setState({ isNameValidErr: "Please enter your name." });
+    } else if (typeof name !== "string" || !name.match(/^[a-zA-Z -]+$/)) {
       this.setState({
-        isNameValidErr: 'Name must contain only alphabetic text.',
+        isNameValidErr: "Name must contain only alphabetic text.",
       });
     } else {
       this.setState({ isNameValidErr: null });
     }
   };
 
-  isUsernameValid = e => {
+  isUsernameValid = (e) => {
     e.preventDefault();
     let username = e.target.value;
-    if (username === '' || username === null) {
-      this.setState({ isUsernameValidErr: 'Please enter a username.' });
-    } else if (typeof username !== 'string') {
-      this.setState({ isUsernameValidErr: 'Username must contain text.' });
+    if (username === "" || username === null) {
+      this.setState({ isUsernameValidErr: "Please enter a username." });
+    } else if (typeof username !== "string") {
+      this.setState({ isUsernameValidErr: "Username must contain text." });
     } else {
       this.setState({ isUsernameValidErr: null });
     }
   };
 
-  isPasswordValid = e => {
+  isPasswordValid = (e) => {
     e.preventDefault();
     let password = e.target.value;
-    if (password === '' || password === null) {
-      this.setState({ isPasswordValidErr: 'Please enter a password.' });
-    } else if (typeof password !== 'string') {
-      this.setState({ isPasswordValidErr: 'Password must contain text.' });
+    if (password === "" || password === null) {
+      this.setState({ isPasswordValidErr: "Please enter a password." });
+    } else if (typeof password !== "string") {
+      this.setState({ isPasswordValidErr: "Password must contain text." });
     } else {
       this.setState({ isPasswordValidErr: null });
     }
   };
 
-  isStreetValid = e => {
+  isStreetValid = (e) => {
     e.preventDefault();
     let street = e.target.value;
-    if (street === '' || street === null) {
-      this.setState({ isStreetValidErr: 'Please enter a street.' });
-    } else if (typeof street !== 'string' || !street.match(/^[0-9a-zA-Z #-]+$/)) {
+    if (street === "" || street === null) {
+      this.setState({ isStreetValidErr: "Please enter a street." });
+    } else if (
+      typeof street !== "string" ||
+      !street.match(/^[0-9a-zA-Z #-]+$/)
+    ) {
       this.setState({
-        isStreetValidErr: 'Street must contain only alphanumeric text.',
+        isStreetValidErr: "Street must contain only alphanumeric text.",
       });
     } else {
       this.setState({ isStreetValidErr: null });
     }
   };
 
-  isCityValid = e => {
+  isCityValid = (e) => {
     e.preventDefault();
     let city = e.target.value;
-    if (city === '' || city === null) {
-      this.setState({ isCityValidErr: 'Please enter a city.' });
-    } else if (typeof city !== 'string' || !city.match(/^[a-zA-Z -]+$/)) {
+    if (city === "" || city === null) {
+      this.setState({ isCityValidErr: "Please enter a city." });
+    } else if (typeof city !== "string" || !city.match(/^[a-zA-Z -]+$/)) {
       this.setState({
-        isCityValidErr: 'City must contain only alphabetic text.',
+        isCityValidErr: "City must contain only alphabetic text.",
       });
     } else {
       this.setState({ isCityValidErr: null });
     }
   };
 
-  isStateValid = e => {
+  isStateValid = (e) => {
     e.preventDefault();
     let state = e.target.value;
-    if (state === 'placeholder') {
-      this.setState({ isStateValidErr: 'Please enter a State.' });
+    if (state === "placeholder") {
+      this.setState({ isStateValidErr: "Please enter a State." });
     } else {
       this.setState({ isStateValidErr: null });
     }
   };
 
   /* Render an input notification if zip entered is >5 digits */
-  isZipValid = e => {
+  isZipValid = (e) => {
     e.preventDefault();
     let zipString = e.target.value.toString();
     if (zipString.length > 5) {
       this.setState({
-        isZipValidErr: 'Zip code cannot be larger than 5 digits.',
+        isZipValidErr: "Zip code cannot be larger than 5 digits.",
       });
     } else {
       this.setState({ isZipValidErr: null });
     }
   };
 
-  handleFixCredentialClick = e => {
+  handleFixCredentialClick = (e) => {
     e.preventDefault();
-    this.setState({isRegistrationValidErr: null})
-  }
+    this.setState({ isRegistrationValidErr: null });
+  };
 
   componentDidMount() {
     this.firstInput.current.focus();
@@ -198,30 +199,43 @@ class RegistrationForm extends Component {
     return (
       <>
         {isRegistrationValidErr ? (
-            <div className="credential-alert">
-              <p className="credential-alert-msg">{isRegistrationValidErr}</p>
-              <button className="credential-alert-msg" onClick={this.handleFixCredentialClick}>Try again</button>
-            </div>
-          ) : (
-            ''
-          )}
+          <div className="credential-alert">
+            <p className="credential-alert-msg">{isRegistrationValidErr}</p>
+            <button
+              className="credential-alert-msg"
+              onClick={this.handleFixCredentialClick}
+            >
+              Try again
+            </button>
+          </div>
+        ) : (
+          ""
+        )}
         <form className="RegistrationForm" onSubmit={this.handleSubmit}>
-          <div role="alert" className='alert'>
+          <div role="alert" className="alert">
             {isRegistrationValidErr && <p>{isRegistrationValidErr}</p>}
           </div>
-          <div role="alert" className='alert'>{isNameValidErr && <p>{isNameValidErr}</p>}</div>
-          <div role="alert" className='alert'>
+          <div role="alert" className="alert">
+            {isNameValidErr && <p>{isNameValidErr}</p>}
+          </div>
+          <div role="alert" className="alert">
             {isUsernameValidErr && <p>{isUsernameValidErr}</p>}
           </div>
-          <div role="alert" className='alert'>
+          <div role="alert" className="alert">
             {isPasswordValidErr && <p>{isPasswordValidErr}</p>}
           </div>
-          <div role="alert" className='alert'>
+          <div role="alert" className="alert">
             {isStreetValidErr && <p>{isStreetValidErr}</p>}
           </div>
-          <div role="alert" className='alert'>{isCityValidErr && <p>{isCityValidErr}</p>}</div>
-          <div role="alert" className='alert'>{isStateValidErr && <p>{isStateValidErr}</p>}</div>
-          <div role="alert" className='alert'>{isZipValidErr && <p>{isZipValidErr}</p>}</div>
+          <div role="alert" className="alert">
+            {isCityValidErr && <p>{isCityValidErr}</p>}
+          </div>
+          <div role="alert" className="alert">
+            {isStateValidErr && <p>{isStateValidErr}</p>}
+          </div>
+          <div role="alert" className="alert">
+            {isZipValidErr && <p>{isZipValidErr}</p>}
+          </div>
           <section className="form-fields">
             <Label className="small" htmlFor="name">
               Name
@@ -231,7 +245,7 @@ class RegistrationForm extends Component {
               ref={this.firstInput}
               id="registration-name-input"
               name="name"
-              onChange={e => this.isNameValid(e)}
+              onChange={(e) => this.isNameValid(e)}
               required
             />
           </section>
@@ -243,7 +257,7 @@ class RegistrationForm extends Component {
             <Input
               id="registration-username-input"
               name="username"
-              onChange={e => this.isUsernameValid(e)}
+              onChange={(e) => this.isUsernameValid(e)}
               required
             />
           </section>
@@ -256,7 +270,7 @@ class RegistrationForm extends Component {
               ref={this.firstInput}
               id="registration-street-input"
               name="street"
-              onChange={e => this.isStreetValid(e)}
+              onChange={(e) => this.isStreetValid(e)}
               required
             />
           </section>
@@ -268,7 +282,7 @@ class RegistrationForm extends Component {
             <Input
               id="registration-city-input"
               name="city"
-              onChange={e => this.isCityValid(e)}
+              onChange={(e) => this.isCityValid(e)}
               required
             />
           </section>
@@ -277,12 +291,15 @@ class RegistrationForm extends Component {
               State
               <Required />
             </Label>
-            <select name="state" defaultValue="placeholder">
+            <select
+              name="state"
+              defaultValue="placeholder"
+              onChange={(e) => this.isStateValid(e)}
+            >
               <option
                 value="placeholder"
                 className="placeholderOption"
                 disabled
-                onChange={e => this.isStateValid(e)}
                 hidden
               >
                 State
@@ -448,7 +465,7 @@ class RegistrationForm extends Component {
               id="registration-zip-input"
               name="zip"
               type="number"
-              onChange={e => this.isZipValid(e)}
+              onChange={(e) => this.isZipValid(e)}
               required
             />
           </section>
@@ -461,7 +478,7 @@ class RegistrationForm extends Component {
               id="registration-password-input"
               name="password"
               type="password"
-              onChange={e => this.isPasswordValid(e)}
+              onChange={(e) => this.isPasswordValid(e)}
               required
             />
           </section>
@@ -472,7 +489,7 @@ class RegistrationForm extends Component {
               type="submit"
             >
               Sign Up
-            </Button>{' '}
+            </Button>{" "}
             <Link className="login-redirect" to="/login">
               Already have an account?
             </Link>
